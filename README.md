@@ -1,6 +1,6 @@
 # VedaAI Assessment Creator
 
-AI assessment creator for teachers. Create an assignment, generate a structured question paper with an LLM, and view it in a clean exam paper layout.
+AI assessment creator for teachers. Create an assignment, generate a structured question paper with an LLM, and view it in a clean question paper layout.
 
 ## Structure
 
