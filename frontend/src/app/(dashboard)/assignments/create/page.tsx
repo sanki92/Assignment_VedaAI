@@ -13,6 +13,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import Topbar from "@/components/layout/Topbar";
+import MobileSubHeader from "@/components/layout/MobileSubHeader";
 import Stepper from "@/components/create/Stepper";
 
 const questionTypeOptions = [
@@ -73,7 +74,8 @@ export default function CreateAssignmentPage() {
     <>
       <Topbar />
       <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-2 pb-6 scrollbar-thin">
-        <div className="pt-1">
+        <MobileSubHeader title="Create Assignment" />
+        <div className="hidden pt-1 lg:block">
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-[#22c55e] ring-4 ring-[#22c55e]/15" />
             <h1 className="text-2xl font-bold">Create Assignment</h1>
@@ -88,7 +90,7 @@ export default function CreateAssignmentPage() {
           <span className="h-1.5 flex-1 rounded-full bg-[#dcdcdc]" />
         </div>
 
-        <div className="mx-auto mt-6 w-full max-w-4xl rounded-3xl bg-surface p-10 shadow-[0_4px_28px_rgba(0,0,0,0.05)]">
+        <div className="mx-auto mt-6 w-full max-w-4xl rounded-3xl bg-surface p-5 shadow-[0_4px_28px_rgba(0,0,0,0.05)] lg:p-10">
           <h2 className="text-xl font-bold">Assignment Details</h2>
           <p className="mt-1 text-sm text-muted">
             Basic information about your assignment
@@ -134,50 +136,66 @@ export default function CreateAssignmentPage() {
 
           <div className="mt-8 flex items-center gap-3 text-base font-bold">
             <span className="flex-1">Question Type</span>
-            <span className="w-8" />
-            <span className="hidden w-32 text-center sm:block">
+            <span className="hidden w-8 lg:block" />
+            <span className="hidden w-32 text-center lg:block">
               No. of Questions
             </span>
-            <span className="hidden w-32 text-center sm:block">Marks</span>
+            <span className="hidden w-32 text-center lg:block">Marks</span>
           </div>
 
           <div className="mt-3 flex flex-col gap-3">
             {rows.map((row) => (
-              <div key={row.id} className="flex items-center gap-3">
-                <div className="relative flex-1">
-                  <select
-                    value={row.type}
-                    onChange={(e) => updateRow(row.id, { type: e.target.value })}
-                    className="w-full appearance-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-9 text-sm font-medium shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none"
+              <div
+                key={row.id}
+                className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-[0_1px_6px_rgba(0,0,0,0.06)] lg:flex-row lg:items-center lg:gap-3 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none"
+              >
+                <div className="flex items-center gap-3 lg:flex-1">
+                  <div className="relative flex-1">
+                    <select
+                      value={row.type}
+                      onChange={(e) =>
+                        updateRow(row.id, { type: e.target.value })
+                      }
+                      className="w-full appearance-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-9 text-sm font-medium shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none"
+                    >
+                      {questionTypeOptions.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeRow(row.id)}
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4]"
                   >
-                    {questionTypeOptions.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => removeRow(row.id)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4]"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-                <div className="w-32">
-                  <Stepper
-                    value={row.count}
-                    min={1}
-                    onChange={(v) => updateRow(row.id, { count: v })}
-                  />
-                </div>
-                <div className="w-32">
-                  <Stepper
-                    value={row.marks}
-                    min={1}
-                    onChange={(v) => updateRow(row.id, { marks: v })}
-                  />
+
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 rounded-2xl bg-[#f6f6f6] p-4 lg:flex lg:gap-3 lg:bg-transparent lg:p-0">
+                  <div className="lg:w-32">
+                    <p className="mb-2 text-center text-sm font-semibold lg:hidden">
+                      No. of Questions
+                    </p>
+                    <Stepper
+                      value={row.count}
+                      min={1}
+                      onChange={(v) => updateRow(row.id, { count: v })}
+                    />
+                  </div>
+                  <div className="lg:w-32">
+                    <p className="mb-2 text-center text-sm font-semibold lg:hidden">
+                      Marks
+                    </p>
+                    <Stepper
+                      value={row.marks}
+                      min={1}
+                      onChange={(v) => updateRow(row.id, { marks: v })}
+                    />
+                  </div>
                 </div>
               </div>
             ))}
