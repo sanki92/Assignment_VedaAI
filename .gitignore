@@ -2,6 +2,10 @@ node_modules/
 .pnp
 .pnp.js
 
+# local test artifacts
+/sample-material.txt
+/*.pdf
+
 .next/
 out/
 build/
