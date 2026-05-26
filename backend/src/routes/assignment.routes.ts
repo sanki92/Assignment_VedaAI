@@ -4,11 +4,21 @@ import { validateBody } from "../middleware/validate";
 import {
   createAssignment,
   getAssignment,
+  listAssignments,
   resetForRegeneration,
 } from "../services/assignment.service";
 import { enqueueGeneration } from "../queues/generation.queue";
 
 const router = Router();
+
+router.get("/", async (_req, res, next) => {
+  try {
+    const docs = await listAssignments();
+    res.json(docs.map((d) => ({ ...d, id: String(d._id) })));
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.post("/", validateBody(createAssignmentSchema), async (req, res, next) => {
   try {

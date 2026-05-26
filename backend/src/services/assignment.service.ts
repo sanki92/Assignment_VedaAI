@@ -9,6 +9,14 @@ export async function createAssignment(input: CreateAssignmentInput) {
   return Assignment.create({ ...input, inputHash, status: "queued" });
 }
 
+export async function listAssignments() {
+  return Assignment.find()
+    .sort({ createdAt: -1 })
+    .limit(50)
+    .select("title subject grade dueDate status createdAt")
+    .lean();
+}
+
 export async function getAssignment(id: string) {
   if (!isValidObjectId(id)) return null;
   return Assignment.findById(id).lean();
