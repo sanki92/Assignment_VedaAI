@@ -17,14 +17,15 @@ type NavItem = {
   href: string;
   icon: typeof LayoutGrid;
   badge?: number;
+  disabled?: boolean;
 };
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/home", icon: LayoutGrid },
-  { label: "My Groups", href: "/groups", icon: Images },
+  { label: "Home", href: "/home", icon: LayoutGrid, disabled: true },
+  { label: "My Groups", href: "/groups", icon: Images, disabled: true },
   { label: "Assignments", href: "/assignments", icon: ClipboardList, badge: 10 },
-  { label: "AI Teacher's Toolkit", href: "/toolkit", icon: BookOpen },
-  { label: "My Library", href: "/library", icon: Clock3 },
+  { label: "AI Teacher's Toolkit", href: "/toolkit", icon: BookOpen, disabled: true },
+  { label: "My Library", href: "/library", icon: Clock3, disabled: true },
 ];
 
 export default function Sidebar() {
@@ -49,8 +50,22 @@ export default function Sidebar() {
 
       <nav className="flex flex-col gap-1">
         {navItems.map((item) => {
-          const active = pathname.startsWith(item.href);
           const Icon = item.icon;
+
+          if (item.disabled) {
+            return (
+              <div
+                key={item.href}
+                aria-disabled
+                className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium tracking-[-0.04em] text-[#303030] opacity-40"
+              >
+                <Icon className="h-[18px] w-[18px]" />
+                <span className="flex-1">{item.label}</span>
+              </div>
+            );
+          }
+
+          const active = pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
@@ -74,13 +89,13 @@ export default function Sidebar() {
       </nav>
 
       <div className="mt-auto flex flex-col gap-3 pt-6">
-        <Link
-          href="/settings"
-          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted transition hover:bg-[#f7f7f7] hover:text-ink"
+        <div
+          aria-disabled
+          className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium tracking-[-0.04em] text-[#303030] opacity-40"
         >
           <Settings className="h-[18px] w-[18px]" />
           Settings
-        </Link>
+        </div>
 
         <div className="flex items-center gap-3 rounded-xl bg-[#f6f6f6] p-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f0c27a] text-base">
