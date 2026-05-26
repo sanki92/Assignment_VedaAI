@@ -72,7 +72,7 @@ export default function CreateAssignmentPage() {
   return (
     <>
       <Topbar />
-      <main className="flex flex-1 flex-col overflow-y-auto px-2 pb-6 scrollbar-thin">
+      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-2 pb-6 scrollbar-thin">
         <div className="pt-1">
           <div className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full bg-[#22c55e] ring-4 ring-[#22c55e]/15" />

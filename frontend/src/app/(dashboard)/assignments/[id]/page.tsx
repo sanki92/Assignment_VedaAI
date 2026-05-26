@@ -8,7 +8,7 @@ export default function OutputPage() {
   return (
     <>
       <Topbar title="Create New" />
-      <main className="flex flex-1 flex-col overflow-y-auto pb-8 scrollbar-thin">
+      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-8 scrollbar-thin">
         <div className="rounded-[28px] bg-[#2c2c2c] p-3">
           <OutputHeader message={paper.message} />
 

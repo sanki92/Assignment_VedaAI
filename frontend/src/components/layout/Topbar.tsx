@@ -7,7 +7,7 @@ export default function Topbar({ title = "Assignment" }: { title?: string }) {
   const router = useRouter();
 
   return (
-    <header className="flex h-16 items-center justify-between rounded-2xl bg-surface px-5">
+    <header className="flex h-16 shrink-0 items-center justify-between rounded-2xl bg-surface px-5">
       <div className="flex items-center gap-3">
         <button
           onClick={() => router.back()}

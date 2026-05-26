@@ -22,7 +22,7 @@ export default function AssignmentsPage() {
           <EmptyAssignments />
         </main>
       ) : (
-        <main className="relative flex flex-1 flex-col overflow-hidden">
+        <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
           <div className="flex flex-1 flex-col overflow-y-auto px-2 pb-28 scrollbar-thin">
             <div className="pt-1">
               <div className="flex items-center gap-2">
