@@ -21,7 +21,7 @@ export default function EmptyAssignments() {
 
       <Link
         href="/assignments/create"
-        className="mt-7 flex items-center gap-2 rounded-full bg-[#101010] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black"
+        className="mt-7 flex items-center gap-2 rounded-full bg-[#101010] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 active:translate-y-px"
       >
         <Plus className="h-4 w-4" />
         Create Your First Assignment

@@ -56,7 +56,8 @@ export default function AssignmentsPage() {
           <EmptyAssignments />
           <Link
             href="/assignments/create"
-            className="absolute bottom-5 right-5 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] lg:hidden"
+            aria-label="Create assignment"
+            className="absolute bottom-5 right-5 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition hover:scale-105 active:scale-95 lg:hidden"
           >
             <Plus className="h-6 w-6 text-[#ef6820]" />
           </Link>
@@ -82,11 +83,11 @@ export default function AssignmentsPage() {
           </div>
 
           <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-surface px-5 py-3 shadow-[0_8px_24px_rgba(0,0,0,0.06)] lg:mt-5">
-            <button className="flex shrink-0 items-center gap-2 text-sm font-medium text-muted">
+            <button className="flex shrink-0 items-center gap-2 rounded-full px-1 text-sm font-medium text-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">
               <Filter className="h-4 w-4" />
               Filter
             </button>
-            <div className="flex w-full items-center gap-2 rounded-full border border-line px-4 py-2 lg:w-72">
+            <div className="flex w-full items-center gap-2 rounded-full border border-line px-4 py-2 transition focus-within:border-brand/40 lg:w-72">
               <Search className="h-4 w-4 text-faint" />
               <input
                 value={query}
@@ -97,32 +98,45 @@ export default function AssignmentsPage() {
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
-            {filtered.map((a) => (
-              <AssignmentCard
-                key={a.id}
-                assignment={{
-                  id: a.id,
-                  title: a.title,
-                  assignedOn: format(new Date(a.createdAt), "dd-MM-yyyy"),
-                  due: a.dueDate ?? "—",
-                }}
-                onDeleted={(id) =>
-                  setItems((prev) => {
-                    const next = prev.filter((x) => x.id !== id);
-                    setCount(next.length);
-                    return next;
-                  })
-                }
-              />
-            ))}
-          </div>
+          {filtered.length === 0 ? (
+            <div className="mt-16 flex flex-col items-center text-center">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f4f4f4] text-faint">
+                <Search className="h-5 w-5" />
+              </span>
+              <p className="mt-4 text-base font-semibold">No matches found</p>
+              <p className="mt-1 max-w-xs text-sm text-muted">
+                No assignments match &ldquo;{query.trim()}&rdquo;. Try a different
+                search.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+              {filtered.map((a) => (
+                <AssignmentCard
+                  key={a.id}
+                  assignment={{
+                    id: a.id,
+                    title: a.title,
+                    assignedOn: format(new Date(a.createdAt), "dd-MM-yyyy"),
+                    due: a.dueDate ?? "—",
+                  }}
+                  onDeleted={(id) =>
+                    setItems((prev) => {
+                      const next = prev.filter((x) => x.id !== id);
+                      setCount(next.length);
+                      return next;
+                    })
+                  }
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-5 hidden justify-center lg:flex">
           <Link
             href="/assignments/create"
-            className="pointer-events-auto flex items-center gap-2 rounded-full bg-[#101010] px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition hover:bg-black"
+            className="pointer-events-auto flex items-center gap-2 rounded-full bg-[#101010] px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 active:translate-y-px"
           >
             <Plus className="h-4 w-4" />
             Create Assignment
@@ -131,7 +145,8 @@ export default function AssignmentsPage() {
 
         <Link
           href="/assignments/create"
-          className="absolute bottom-5 right-5 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] lg:hidden"
+          aria-label="Create assignment"
+          className="absolute bottom-5 right-5 flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] transition hover:scale-105 active:scale-95 lg:hidden"
         >
           <Plus className="h-6 w-6 text-[#ef6820]" />
         </Link>
