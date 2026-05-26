@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   UploadCloud,
@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import Topbar from "@/components/layout/Topbar";
 import MobileSubHeader from "@/components/layout/MobileSubHeader";
 import Stepper from "@/components/create/Stepper";
+import { useCreateStore } from "@/store/createStore";
 import {
   Select,
   SelectContent,
@@ -39,28 +40,25 @@ const questionTypeOptions = [
   "Fill in the Blanks",
 ];
 
-type Row = {
-  id: number;
-  type: string;
-  count: number;
-  marks: number;
-};
-
-let rowId = 4;
-
 export default function CreateAssignmentPage() {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [dueDate, setDueDate] = useState<Date>();
-  const [instructions, setInstructions] = useState("");
-  const [rows, setRows] = useState<Row[]>([
-    { id: 1, type: "Multiple Choice Questions", count: 4, marks: 1 },
-    { id: 2, type: "Short Questions", count: 3, marks: 2 },
-    { id: 3, type: "Diagram/Graph-Based Questions", count: 5, marks: 5 },
-    { id: 4, type: "Numerical Problems", count: 5, marks: 5 },
-  ]);
+  const {
+    dueDate,
+    instructions,
+    fileName,
+    rows,
+    errors,
+    submitting,
+    setDueDate,
+    setInstructions,
+    setFileName,
+    addRow,
+    removeRow,
+    updateRow,
+    submit,
+  } = useCreateStore();
 
   const totalQuestions = useMemo(
     () => rows.reduce((sum, r) => sum + r.count, 0),
@@ -71,17 +69,10 @@ export default function CreateAssignmentPage() {
     [rows]
   );
 
-  const updateRow = (id: number, patch: Partial<Row>) =>
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
-
-  const removeRow = (id: number) =>
-    setRows((prev) => prev.filter((r) => r.id !== id));
-
-  const addRow = () =>
-    setRows((prev) => [
-      ...prev,
-      { id: ++rowId, type: questionTypeOptions[0], count: 1, marks: 1 },
-    ]);
+  const onNext = async () => {
+    const id = await submit();
+    if (id) router.push(`/assignments/${id}`);
+  };
 
   return (
     <>
@@ -138,7 +129,11 @@ export default function CreateAssignmentPage() {
 
           <label className="mt-8 block text-base font-bold">Due Date</label>
           <Popover>
-            <PopoverTrigger className="mt-2 flex w-full items-center justify-between rounded-xl border border-[#efefef] bg-white px-4 py-3.5 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none">
+            <PopoverTrigger
+              className={`mt-2 flex w-full items-center justify-between rounded-xl border bg-white px-4 py-3.5 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none ${
+                errors.dueDate ? "border-[#e5484d]" : "border-[#efefef]"
+              }`}
+            >
               <span className={dueDate ? "" : "text-faint"}>
                 {dueDate ? format(dueDate, "dd-MM-yyyy") : "DD-MM-YYYY"}
               </span>
@@ -155,6 +150,11 @@ export default function CreateAssignmentPage() {
               />
             </PopoverContent>
           </Popover>
+          {errors.dueDate && (
+            <p className="mt-1.5 text-xs font-medium text-[#e5484d]">
+              {errors.dueDate}
+            </p>
+          )}
 
           <div className="mt-8 flex items-center gap-3 text-base font-bold">
             <span className="flex-1">Question Type</span>
@@ -222,6 +222,12 @@ export default function CreateAssignmentPage() {
             ))}
           </div>
 
+          {errors.questionTypes && (
+            <p className="mt-2 text-xs font-medium text-[#e5484d]">
+              {errors.questionTypes}
+            </p>
+          )}
+
           <button
             type="button"
             onClick={addRow}
@@ -268,10 +274,11 @@ export default function CreateAssignmentPage() {
             Previous
           </button>
           <button
-            onClick={() => router.push("/assignments/1")}
-            className="flex items-center gap-2 rounded-full bg-[#101010] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black"
+            onClick={onNext}
+            disabled={submitting}
+            className="flex items-center gap-2 rounded-full bg-[#101010] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black disabled:opacity-60"
           >
-            Next
+            {submitting ? "Generating..." : "Next"}
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>
