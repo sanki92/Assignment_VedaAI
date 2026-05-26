@@ -43,6 +43,7 @@ Rules:
 - Each section: id ("A", "B", ...), title ("Section A"), heading (a label for the question type), instruction (e.g. "Attempt all questions. Each question carries N marks"), and the questions.
 - Each question: difficulty ("Easy" | "Moderate" | "Challenging"), text, marks. Use a balanced mix of difficulties.
 - For Multiple Choice Questions, include the options (a) to (d) inside the question text.
+- Do not prefix the question text with a number or "Q1"; provide only the question content (numbering is added separately).
 - maxMarks must equal ${totalMarks}.
 - grade: the class as an ordinal using Arabic numerals only, e.g. "8th" or "10th". Never use Roman numerals and never include the word "Class".
 - timeAllowed: a sensible duration string based on total marks unless the instructions specify one.
