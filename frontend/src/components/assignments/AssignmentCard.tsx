@@ -21,7 +21,7 @@ export default function AssignmentCard({
   return (
     <div className="relative rounded-2xl border border-line bg-surface px-6 py-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
       <div className="flex items-start justify-between">
-        <h3 className="text-base font-bold underline decoration-1 underline-offset-[3px]">
+        <h3 className="text-2xl font-extrabold leading-[1.2] tracking-[-0.04em] text-[#303030] underline decoration-1 underline-offset-[3px]">
           {assignment.title}
         </h3>
         <button

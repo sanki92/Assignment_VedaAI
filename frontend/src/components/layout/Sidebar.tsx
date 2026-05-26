@@ -41,7 +41,7 @@ export default function Sidebar() {
 
       <Link
         href="/assignments/create"
-        className="mb-6 flex items-center justify-center gap-2 rounded-full brand-gradient px-4 py-3 text-sm font-semibold text-white shadow-[0_6px_16px_rgba(239,104,32,0.35)] ring-2 ring-[#f7b58f] transition hover:opacity-95"
+        className="btn-create mb-6 flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95"
       >
         <Sparkles className="h-4 w-4" />
         Create Assignment
@@ -55,10 +55,10 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium tracking-[-0.04em] transition ${
                 active
                   ? "bg-[#f4f4f4] text-ink"
-                  : "text-muted hover:bg-[#f7f7f7] hover:text-ink"
+                  : "text-[#303030] hover:bg-[#f7f7f7]"
               }`}
             >
               <Icon className="h-[18px] w-[18px]" />
