@@ -16,6 +16,7 @@ const assignmentSchema = new Schema(
     grade: { type: String },
     dueDate: { type: String },
     instructions: { type: String },
+    material: { type: String },
     questionTypes: { type: [questionTypeSchema], required: true },
     inputHash: { type: String, index: true },
     status: {

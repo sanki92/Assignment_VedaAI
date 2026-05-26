@@ -11,6 +11,7 @@ export function hashInput(input: CreateAssignmentInput): string {
     subject: input.subject ?? "",
     grade: input.grade ?? "",
     instructions: input.instructions ?? "",
+    material: input.material ?? "",
     questionTypes: input.questionTypes,
   });
   return crypto.createHash("sha256").update(normalized).digest("hex");

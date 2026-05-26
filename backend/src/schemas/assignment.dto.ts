@@ -12,6 +12,7 @@ export const createAssignmentSchema = z.object({
   grade: z.string().min(1).max(40).optional(),
   dueDate: z.string().max(40).optional(),
   instructions: z.string().max(2000).optional(),
+  material: z.string().max(20000).optional(),
   questionTypes: z.array(questionTypeSchema).min(1).max(15),
 });
 

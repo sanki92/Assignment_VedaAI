@@ -30,6 +30,7 @@ export function startGenerationWorker(): Worker<GenerationJobData> {
         grade: doc.grade ?? undefined,
         dueDate: doc.dueDate ?? undefined,
         instructions: doc.instructions ?? undefined,
+        material: doc.material ?? undefined,
         questionTypes: doc.questionTypes as CreateAssignmentInput["questionTypes"],
       };
 
