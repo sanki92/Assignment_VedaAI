@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { IconType } from "react-icons";
-import { PiSquaresFourBold } from "react-icons/pi";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { LuCalendarCheck } from "react-icons/lu";
+import { HiSquares2X2 } from "react-icons/hi2";
+import { HiCalendar } from "react-icons/hi";
+import { BiSolidFilePlus } from "react-icons/bi";
 import { RiSparkling2Line } from "react-icons/ri";
 
 type Tab = {
@@ -16,9 +16,9 @@ type Tab = {
 };
 
 const tabs: Tab[] = [
-  { label: "Home", href: "/home", icon: PiSquaresFourBold, disabled: true },
-  { label: "Assignments", href: "/assignments", icon: LuCalendarCheck },
-  { label: "Library", href: "/library", icon: IoDocumentTextOutline, disabled: true },
+  { label: "Home", href: "/home", icon: HiSquares2X2, disabled: true },
+  { label: "Assignments", href: "/assignments", icon: HiCalendar },
+  { label: "Library", href: "/library", icon: BiSolidFilePlus, disabled: true },
   { label: "AI Toolkit", href: "/toolkit", icon: RiSparkling2Line, disabled: true },
 ];
 
