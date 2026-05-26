@@ -21,6 +21,26 @@ function isQuotaError(err: unknown): boolean {
   );
 }
 
+const ROMAN: Record<string, number> = {
+  i: 1, ii: 2, iii: 3, iv: 4, v: 5, vi: 6,
+  vii: 7, viii: 8, ix: 9, x: 10, xi: 11, xii: 12,
+};
+
+function ordinal(n: number): string {
+  const suffixes = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+}
+
+function normalizeGrade(raw: string): string {
+  const cleaned = raw.replace(/^(class|grade)\s+/i, "").trim();
+  const roman = ROMAN[cleaned.toLowerCase()];
+  if (roman) return ordinal(roman);
+  const digits = cleaned.match(/\d+/);
+  if (digits) return ordinal(Number(digits[0]));
+  return cleaned;
+}
+
 function extractJson(raw: string): string {
   const trimmed = raw.trim();
   const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
@@ -73,7 +93,10 @@ export async function generateQuestionPaper(
   for (let attempt = 0; attempt < 2; attempt++) {
     const raw = await callWithRotation(buildPrompt(input, attempt > 0));
     const paper = parsePaper(raw);
-    if (paper) return paper;
+    if (paper) {
+      paper.grade = normalizeGrade(paper.grade);
+      return paper;
+    }
     logger.warn({ attempt }, "Model output failed validation, retrying");
   }
   throw new Error("Model did not return a valid question paper");
