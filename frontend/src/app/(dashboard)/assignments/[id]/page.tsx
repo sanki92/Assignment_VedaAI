@@ -1,56 +1,73 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Download, RefreshCw, TriangleAlert } from "lucide-react";
+import { ArrowLeft, Download, RefreshCw, TriangleAlert } from "lucide-react";
 import { PuffLoader } from "react-spinners";
 import Topbar from "@/components/layout/Topbar";
 import { api, type AssignmentDetail } from "@/lib/api";
 import { getSocket } from "@/lib/socket";
+import type { Difficulty } from "@/lib/paper";
+
+const difficultyChip: Record<Difficulty, string> = {
+  Easy: "bg-[#e7f6ec] text-[#1f7a44]",
+  Moderate: "bg-[#fdf2e0] text-[#a8650e]",
+  Challenging: "bg-[#fcebe9] text-[#b4332c]",
+};
 
 export default function OutputPage() {
   const { id } = useParams<{ id: string }>();
   const [detail, setDetail] = useState<AssignmentDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [regenerating, setRegenerating] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  useEffect(() => {
-    let active = true;
-    let timer: ReturnType<typeof setTimeout>;
+  const activeRef = useRef(true);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-    const load = async () => {
-      try {
-        const data = await api.getAssignment(id);
-        if (!active) return;
-        setDetail(data);
-        setLoading(false);
-        setRegenerating(false);
-        if (data.status === "queued" || data.status === "processing") {
-          timer = setTimeout(load, 3000);
-        }
-      } catch {
-        if (active) setLoading(false);
+  const load = useCallback(async () => {
+    try {
+      const data = await api.getAssignment(id);
+      if (!activeRef.current) return;
+      setDetail(data);
+      setNotFound(false);
+      setLoading(false);
+      clearTimeout(timerRef.current);
+      if (data.status === "queued" || data.status === "processing") {
+        timerRef.current = setTimeout(load, 3000);
       }
-    };
+    } catch {
+      if (!activeRef.current) return;
+      setLoading(false);
+      setNotFound(true);
+    }
+  }, [id]);
 
+  useEffect(() => {
+    activeRef.current = true;
     load();
+
     const socket = getSocket();
     socket.emit("assignment:subscribe", id);
     const onUpdate = () => load();
     socket.on("assignment:update", onUpdate);
 
     return () => {
-      active = false;
-      clearTimeout(timer);
+      activeRef.current = false;
+      clearTimeout(timerRef.current);
       socket.off("assignment:update", onUpdate);
       socket.emit("assignment:unsubscribe", id);
     };
-  }, [id]);
+  }, [id, load]);
 
   const regenerate = async () => {
-    setRegenerating(true);
-    await api.regenerate(id);
+    setDetail((d) => (d ? { ...d, status: "queued", result: null } : d));
+    try {
+      await api.regenerate(id);
+    } finally {
+      load();
+    }
   };
 
   const downloadPdf = async () => {
@@ -65,10 +82,40 @@ export default function OutputPage() {
   };
 
   const paper = detail?.result;
-  const pending =
-    !detail || detail.status === "queued" || detail.status === "processing";
 
-  if (loading || pending) {
+  if (notFound) {
+    return (
+      <>
+        <Topbar title="Create New" />
+        <main className="flex min-h-0 flex-1 flex-col items-center justify-center gap-5 px-6 text-center">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f4f4f4] text-muted">
+            <TriangleAlert className="h-6 w-6" />
+          </span>
+          <div>
+            <p className="text-base font-bold lg:text-lg">Assignment not found</p>
+            <p className="mt-1 text-sm text-muted">
+              This assignment may have been deleted or never existed.
+            </p>
+          </div>
+          <Link
+            href="/assignments"
+            className="flex items-center gap-2 rounded-full bg-[#101010] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 active:translate-y-px"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Assignments
+          </Link>
+        </main>
+      </>
+    );
+  }
+
+  const pending =
+    loading ||
+    !detail ||
+    detail.status === "queued" ||
+    detail.status === "processing";
+
+  if (pending) {
     return (
       <>
         <Topbar title="Create New" />
@@ -95,10 +142,9 @@ export default function OutputPage() {
               </p>
               <button
                 onClick={regenerate}
-                disabled={regenerating}
-                className="mt-4 flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-[#f1f1f1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 active:translate-y-px disabled:opacity-60"
+                className="mt-4 flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-[#f1f1f1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 active:translate-y-px"
               >
-                <RefreshCw className={`h-4 w-4 ${regenerating ? "animate-spin" : ""}`} />
+                <RefreshCw className="h-4 w-4" />
                 Regenerate
               </button>
             </div>
@@ -119,10 +165,9 @@ export default function OutputPage() {
                   </button>
                   <button
                     onClick={regenerate}
-                    disabled={regenerating}
-                    className="flex items-center gap-2 rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 active:translate-y-px disabled:opacity-60"
+                    className="flex items-center gap-2 rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 active:translate-y-px"
                   >
-                    <RefreshCw className={`h-4 w-4 ${regenerating ? "animate-spin" : ""}`} />
+                    <RefreshCw className="h-4 w-4" />
                     Regenerate
                   </button>
                 </div>
@@ -168,7 +213,13 @@ export default function OutputPage() {
                     <ol className="mt-4 list-decimal space-y-4 pl-6 text-sm leading-relaxed lg:text-base">
                       {section.questions.map((q, i) => (
                         <li key={i}>
-                          [{q.difficulty}] {q.text} [{q.marks} Marks]
+                          <span
+                            className={`mr-2 inline-block rounded-md px-2 py-0.5 text-xs font-semibold ${difficultyChip[q.difficulty]}`}
+                          >
+                            {q.difficulty}
+                          </span>
+                          {q.text}{" "}
+                          <span className="font-semibold">[{q.marks} Marks]</span>
                         </li>
                       ))}
                     </ol>
