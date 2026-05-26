@@ -5,6 +5,7 @@ import {
   createAssignment,
   getAssignment,
   listAssignments,
+  deleteAssignment,
   resetForRegeneration,
 } from "../services/assignment.service";
 import { enqueueGeneration } from "../queues/generation.queue";
@@ -35,6 +36,16 @@ router.get("/:id", async (req, res, next) => {
     const doc = await getAssignment(req.params.id);
     if (!doc) return res.status(404).json({ error: "NotFound" });
     res.json({ ...doc, id: String(doc._id) });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const deleted = await deleteAssignment(req.params.id);
+    if (!deleted) return res.status(404).json({ error: "NotFound" });
+    res.status(204).send();
   } catch (err) {
     next(err);
   }

@@ -37,6 +37,11 @@ export async function markFailed(id: string, error: string) {
   return Assignment.findByIdAndUpdate(id, { status: "failed", error });
 }
 
+export async function deleteAssignment(id: string) {
+  if (!isValidObjectId(id)) return null;
+  return Assignment.findByIdAndDelete(id);
+}
+
 export async function resetForRegeneration(id: string) {
   return Assignment.findByIdAndUpdate(id, {
     status: "queued",
