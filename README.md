@@ -21,23 +21,20 @@ AI: Google Gemini (`gemini-2.5-flash`).
 
 ## Architecture
 
-```
-  Browser (Next.js)
-      |  POST /api/assignments
-      v
-  Express API  ──►  Mongo (status: queued)
-      |             BullMQ.add(job)
-      |  202 { id }
-      v
-  socket.io room: assignment:<id>
-                    ▲
-                    │ status updates
-  BullMQ worker ────┘
-      reads job  ─►  build prompt
-                     check Redis cache (hash of inputs)
-                     call Gemini  ─►  parse + validate with Zod
-                     save result to Mongo, cache it
-                     emit { status: done, result }
+```mermaid
+flowchart TD
+    A["Browser (Next.js)"] -->|"POST /api/assignments"| B["Express API"]
+    B -->|"save status: queued"| C[("MongoDB")]
+    B -->|"add job"| Q["BullMQ queue (Redis)"]
+    B -.->|"202 { id }"| A
+    Q --> W["Generation worker"]
+    W -->|"check input hash"| R[("Redis cache")]
+    W -->|"build prompt, call"| G["Gemini"]
+    G -->|"JSON"| W
+    W -->|"validate with Zod, save"| C
+    W -->|"status: processing / done / failed"| S["socket.io room: assignment:id"]
+    S -.->|"live updates"| A
+    A -.->|"GET /api/assignments/:id (poll fallback)"| B
 ```
 
 The generation is async on purpose. A model call takes anywhere from a few seconds to half a minute and can fail or hit a quota, so doing it inline would block the request and give a worse experience. Putting it behind a queue keeps the API fast, lets the worker retry with backoff, and gives the UI something real to show while it waits.
@@ -135,4 +132,3 @@ Frontend is on Vercel. Backend runs on Render as a single web service that hosts
 - Regenerate action on the output page.
 - A "Load example" button on the create form that fills in a realistic brief so the flow can be tried in one click.
 - Live status over websockets with a polling fallback.
-- Mobile layout with a bottom nav, matching the Figma.
