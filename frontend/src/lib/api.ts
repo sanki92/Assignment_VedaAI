@@ -45,6 +45,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (!res.ok) {
     throw new Error(`Request failed: ${res.status}`);
   }
+  if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
 
@@ -62,4 +63,6 @@ export const api = {
       `/api/assignments/${id}/regenerate`,
       { method: "POST" }
     ),
+  deleteAssignment: (id: string) =>
+    request<void>(`/api/assignments/${id}`, { method: "DELETE" }),
 };

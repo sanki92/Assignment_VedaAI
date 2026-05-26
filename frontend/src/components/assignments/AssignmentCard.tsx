@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MoreVertical } from "lucide-react";
+import { api } from "@/lib/api";
 
 export type Assignment = {
   id: string;
@@ -13,10 +14,24 @@ export type Assignment = {
 
 export default function AssignmentCard({
   assignment,
+  onDeleted,
 }: {
   assignment: Assignment;
+  onDeleted?: (id: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await api.deleteAssignment(assignment.id);
+      onDeleted?.(assignment.id);
+    } catch {
+      setDeleting(false);
+      setOpen(false);
+    }
+  };
 
   return (
     <div className="relative rounded-2xl bg-surface px-6 py-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
@@ -45,8 +60,12 @@ export default function AssignmentCard({
             >
               View Assignment
             </Link>
-            <button className="block w-full rounded-xl px-4 py-2.5 text-left text-[15px] font-medium text-[#e5484d] transition hover:bg-[#f5f5f5]">
-              Delete
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="block w-full rounded-xl px-4 py-2.5 text-left text-[15px] font-medium text-[#e5484d] transition hover:bg-[#f5f5f5] disabled:opacity-60"
+            >
+              {deleting ? "Deleting..." : "Delete"}
             </button>
           </div>
         </>

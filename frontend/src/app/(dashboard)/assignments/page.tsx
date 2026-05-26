@@ -101,6 +101,9 @@ export default function AssignmentsPage() {
                   assignedOn: format(new Date(a.createdAt), "dd-MM-yyyy"),
                   due: a.dueDate ?? "—",
                 }}
+                onDeleted={(id) =>
+                  setItems((prev) => prev.filter((x) => x.id !== id))
+                }
               />
             ))}
           </div>
