@@ -12,7 +12,7 @@ export default function Stepper({
   min?: number;
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-full border border-line px-2 py-1.5">
+    <div className="flex items-center justify-between gap-3 rounded-full border border-[#efefef] bg-white px-2 py-2 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
       <button
         type="button"
         onClick={() => onChange(Math.max(min, value - 1))}

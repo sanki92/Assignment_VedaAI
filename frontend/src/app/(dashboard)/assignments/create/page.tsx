@@ -83,13 +83,13 @@ export default function CreateAssignmentPage() {
           </p>
         </div>
 
-        <div className="mx-auto mt-6 flex w-full max-w-3xl gap-3">
+        <div className="mx-auto mt-6 flex w-full max-w-4xl gap-3">
           <span className="h-1.5 flex-1 rounded-full bg-[#101010]" />
           <span className="h-1.5 flex-1 rounded-full bg-[#dcdcdc]" />
         </div>
 
-        <div className="mx-auto mt-6 w-full max-w-3xl rounded-2xl bg-surface p-8 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-          <h2 className="text-lg font-bold">Assignment Details</h2>
+        <div className="mx-auto mt-6 w-full max-w-4xl rounded-3xl bg-surface p-10 shadow-[0_4px_28px_rgba(0,0,0,0.05)]">
+          <h2 className="text-xl font-bold">Assignment Details</h2>
           <p className="mt-1 text-sm text-muted">
             Basic information about your assignment
           </p>
@@ -104,25 +104,25 @@ export default function CreateAssignmentPage() {
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="mt-5 flex w-full flex-col items-center rounded-2xl border-2 border-dashed border-[#dcdcdc] px-6 py-9 text-center transition hover:border-brand/60"
+            className="mt-6 flex w-full flex-col items-center rounded-2xl border-2 border-dashed border-[#d8d8d8] px-6 py-14 text-center transition hover:border-brand/60"
           >
             <span className="flex h-11 w-11 items-center justify-center rounded-full text-ink">
-              <UploadCloud className="h-6 w-6" />
+              <UploadCloud className="h-7 w-7" />
             </span>
-            <span className="mt-2 text-sm font-semibold">
+            <span className="mt-3 text-base font-bold">
               {fileName ?? "Choose a file or drag & drop it here"}
             </span>
             <span className="mt-1 text-xs text-faint">JPEG, PNG, upto 10MB</span>
-            <span className="mt-4 rounded-full border border-line px-4 py-2 text-xs font-semibold">
+            <span className="mt-5 rounded-full border border-line bg-white px-5 py-2.5 text-xs font-semibold shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
               Browse Files
             </span>
           </button>
-          <p className="mt-3 text-center text-xs text-muted">
+          <p className="mt-4 text-center text-sm text-muted">
             Upload images of your preferred document/image
           </p>
 
-          <label className="mt-6 block text-sm font-semibold">Due Date</label>
-          <div className="mt-2 flex items-center justify-between rounded-xl border border-line px-4 py-3">
+          <label className="mt-8 block text-base font-bold">Due Date</label>
+          <div className="mt-2 flex items-center justify-between rounded-xl border border-[#efefef] bg-white px-4 py-3.5 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
             <input
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
@@ -132,12 +132,13 @@ export default function CreateAssignmentPage() {
             <CalendarDays className="h-4 w-4 text-muted" />
           </div>
 
-          <div className="mt-7 flex items-center text-sm font-semibold">
+          <div className="mt-8 flex items-center gap-3 text-base font-bold">
             <span className="flex-1">Question Type</span>
+            <span className="w-8" />
             <span className="hidden w-32 text-center sm:block">
               No. of Questions
             </span>
-            <span className="hidden w-28 text-center sm:block">Marks</span>
+            <span className="hidden w-32 text-center sm:block">Marks</span>
           </div>
 
           <div className="mt-3 flex flex-col gap-3">
@@ -147,7 +148,7 @@ export default function CreateAssignmentPage() {
                   <select
                     value={row.type}
                     onChange={(e) => updateRow(row.id, { type: e.target.value })}
-                    className="w-full appearance-none rounded-xl border border-line bg-surface px-4 py-3 pr-9 text-sm outline-none"
+                    className="w-full appearance-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-9 text-sm font-medium shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none"
                   >
                     {questionTypeOptions.map((opt) => (
                       <option key={opt} value={opt}>
@@ -171,7 +172,7 @@ export default function CreateAssignmentPage() {
                     onChange={(v) => updateRow(row.id, { count: v })}
                   />
                 </div>
-                <div className="w-28">
+                <div className="w-32">
                   <Stepper
                     value={row.marks}
                     min={1}
@@ -193,7 +194,7 @@ export default function CreateAssignmentPage() {
             Add Question Type
           </button>
 
-          <div className="mt-6 flex flex-col items-end gap-1 text-sm font-semibold">
+          <div className="mt-6 flex flex-col items-end gap-1 text-base font-bold">
             <p>
               Total Questions : <span>{totalQuestions}</span>
             </p>
@@ -202,7 +203,7 @@ export default function CreateAssignmentPage() {
             </p>
           </div>
 
-          <label className="mt-7 block text-sm font-semibold">
+          <label className="mt-8 block text-base font-bold">
             Additional Information (For better output)
           </label>
           <div className="relative mt-2">
@@ -211,7 +212,7 @@ export default function CreateAssignmentPage() {
               onChange={(e) => setInstructions(e.target.value)}
               rows={4}
               placeholder="e.g Generate a question paper for 3 hour exam duration..."
-              className="w-full resize-none rounded-xl border border-line px-4 py-3 pr-11 text-sm outline-none placeholder:text-faint"
+              className="w-full resize-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-11 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none placeholder:text-faint"
             />
             <button className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4]">
               <Mic className="h-4 w-4" />
@@ -219,7 +220,7 @@ export default function CreateAssignmentPage() {
           </div>
         </div>
 
-        <div className="mx-auto mt-6 flex w-full max-w-3xl items-center justify-between">
+        <div className="mx-auto mt-6 flex w-full max-w-4xl items-center justify-between">
           <button
             onClick={() => router.back()}
             className="flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-3 text-sm font-semibold transition hover:bg-[#f7f7f7]"
