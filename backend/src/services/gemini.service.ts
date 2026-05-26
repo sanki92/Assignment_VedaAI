@@ -99,5 +99,5 @@ export async function generateQuestionPaper(
     }
     logger.warn({ attempt }, "Model output failed validation, retrying");
   }
-  throw new Error("Model did not return a valid question paper");
+  throw new Error("Model did not return a valid assignment");
 }

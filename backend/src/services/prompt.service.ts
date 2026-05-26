@@ -23,8 +23,8 @@ export function buildPrompt(input: CreateAssignmentInput, retry = false): string
     ? "\nYour previous response was not valid JSON. Respond with ONLY the JSON object, starting with { and ending with }."
     : "";
 
-  return `You are an expert assignment paper setter for Indian CBSE schools.
-Generate a complete question paper as STRICT JSON.
+  return `You are an expert assignment setter for Indian CBSE schools.
+Generate a complete assignment as STRICT JSON.
 
 Context:
 - School: ${SCHOOL}
@@ -46,10 +46,10 @@ Rules:
 - Do not prefix the question text with a number or "Q1"; provide only the question content (numbering is added separately).
 - maxMarks must equal ${totalMarks}.
 - grade: the class as an ordinal using Arabic numerals only, e.g. "8th" or "10th". Never use Roman numerals and never include the word "Class".
-- timeAllowed: a sensible duration string based on total marks unless the instructions specify one.
+- timeAllowed: if the source material or instructions mention a duration, use that exact duration; otherwise estimate a sensible duration from the total marks.
 - generalInstruction: a short line such as "All questions are compulsory unless stated otherwise.".
-- title: a short descriptive paper title (3 to 6 words), e.g. "Class 8 Science - Force and Pressure".
-- message: a one-line friendly intro to the paper.
+- title: a short descriptive title (3 to 6 words), e.g. "Class 8 Science - Force and Pressure".
+- message: a one-line friendly intro that refers to it as an assignment (never call it a question paper or exam).
 - answerKey: concise model answers, one per question, in the same order questions appear across all sections.
 
 Return ONLY a JSON object with this exact shape, no markdown, no commentary:
