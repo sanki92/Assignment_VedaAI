@@ -38,7 +38,7 @@ export default function AssignmentCard({
       <div className="flex items-start justify-between">
         <Link
           href={`/assignments/${assignment.id}`}
-          className="rounded-sm text-2xl font-extrabold leading-[1.2] tracking-[-0.04em] text-[#303030] underline decoration-1 underline-offset-[3px] transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+          className="rounded-sm text-2xl font-extrabold leading-[1.2] tracking-[-0.04em] text-[#303030] transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
         >
           {assignment.title}
         </Link>
