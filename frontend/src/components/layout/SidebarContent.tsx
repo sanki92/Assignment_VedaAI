@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, Settings } from "lucide-react";
+import { Sparkles, Settings, GraduationCap } from "lucide-react";
 import { navItems } from "@/lib/nav";
 
 export default function SidebarContent({
@@ -14,11 +14,15 @@ export default function SidebarContent({
 
   return (
     <>
-      <div className="flex items-center gap-2 px-2 pb-5 pt-1">
-        <span className="flex h-8 w-8 items-center justify-center rounded-lg brand-gradient text-sm font-extrabold text-white">
-          V
+      <div className="flex items-center gap-2.5 px-2 pb-5 pt-1">
+        <img
+          src="/image/logo.png"
+          alt="VedaAI"
+          className="h-11 w-11 object-contain"
+        />
+        <span className="text-2xl font-extrabold tracking-[-0.06em]">
+          VedaAI
         </span>
-        <span className="text-lg font-extrabold tracking-tight">VedaAI</span>
       </div>
 
       <Link
@@ -81,8 +85,8 @@ export default function SidebarContent({
         </div>
 
         <div className="flex items-center gap-3 rounded-xl bg-[#f6f6f6] p-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f0c27a] text-base">
-            🧑‍🏫
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f0c27a] text-white">
+            <GraduationCap className="h-5 w-5" />
           </span>
           <div className="leading-tight">
             <p className="text-sm font-semibold">Delhi Public School</p>

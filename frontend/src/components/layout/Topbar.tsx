@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft, LayoutGrid, Bell, ChevronDown } from "lucide-react";
+import { ArrowLeft, LayoutGrid, Bell, ChevronDown, User } from "lucide-react";
 
 export default function Topbar({ title = "Assignment" }: { title?: string }) {
   const router = useRouter();
@@ -27,8 +27,8 @@ export default function Topbar({ title = "Assignment" }: { title?: string }) {
           <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#ef6820]" />
         </button>
         <button className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition hover:bg-[#f4f4f4]">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#f0c27a] to-[#e0884a] text-sm">
-            🧑
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#e4e4e4] text-[#6b6b6b]">
+            <User className="h-[18px] w-[18px]" />
           </span>
           <span className="text-sm font-semibold">John Doe</span>
           <ChevronDown className="h-4 w-4 text-muted" />
