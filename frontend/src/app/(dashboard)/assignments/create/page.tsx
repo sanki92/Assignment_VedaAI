@@ -5,16 +5,29 @@ import { useRouter } from "next/navigation";
 import {
   UploadCloud,
   CalendarDays,
-  ChevronDown,
   X,
   Plus,
   Mic,
   ArrowLeft,
   ArrowRight,
 } from "lucide-react";
+import { format } from "date-fns";
 import Topbar from "@/components/layout/Topbar";
 import MobileSubHeader from "@/components/layout/MobileSubHeader";
 import Stepper from "@/components/create/Stepper";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 
 const questionTypeOptions = [
   "Multiple Choice Questions",
@@ -40,7 +53,7 @@ export default function CreateAssignmentPage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [fileName, setFileName] = useState<string | null>(null);
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState<Date>();
   const [instructions, setInstructions] = useState("");
   const [rows, setRows] = useState<Row[]>([
     { id: 1, type: "Multiple Choice Questions", count: 4, marks: 1 },
@@ -124,15 +137,24 @@ export default function CreateAssignmentPage() {
           </p>
 
           <label className="mt-8 block text-base font-bold">Due Date</label>
-          <div className="mt-2 flex items-center justify-between rounded-xl border border-[#efefef] bg-white px-4 py-3.5 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-            <input
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              placeholder="DD-MM-YYYY"
-              className="w-full bg-transparent text-sm outline-none placeholder:text-faint"
-            />
-            <CalendarDays className="h-4 w-4 text-muted" />
-          </div>
+          <Popover>
+            <PopoverTrigger className="mt-2 flex w-full items-center justify-between rounded-xl border border-[#efefef] bg-white px-4 py-3.5 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none">
+              <span className={dueDate ? "" : "text-faint"}>
+                {dueDate ? format(dueDate, "dd-MM-yyyy") : "DD-MM-YYYY"}
+              </span>
+              <CalendarDays className="h-4 w-4 text-muted" />
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={dueDate}
+                onSelect={setDueDate}
+                disabled={(date) =>
+                  date < new Date(new Date().setHours(0, 0, 0, 0))
+                }
+              />
+            </PopoverContent>
+          </Popover>
 
           <div className="mt-8 flex items-center gap-3 text-base font-bold">
             <span className="flex-1">Question Type</span>
@@ -150,22 +172,21 @@ export default function CreateAssignmentPage() {
                 className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-[0_1px_6px_rgba(0,0,0,0.06)] lg:flex-row lg:items-center lg:gap-3 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none"
               >
                 <div className="flex items-center gap-3 lg:flex-1">
-                  <div className="relative flex-1">
-                    <select
-                      value={row.type}
-                      onChange={(e) =>
-                        updateRow(row.id, { type: e.target.value })
-                      }
-                      className="w-full appearance-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-9 text-sm font-medium shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none"
-                    >
+                  <Select
+                    value={row.type}
+                    onValueChange={(v) => updateRow(row.id, { type: v ?? row.type })}
+                  >
+                    <SelectTrigger className="!h-12 flex-1 rounded-xl border-[#efefef] bg-white px-4 text-sm font-medium shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
                       {questionTypeOptions.map((opt) => (
-                        <option key={opt} value={opt}>
+                        <SelectItem key={opt} value={opt}>
                           {opt}
-                        </option>
+                        </SelectItem>
                       ))}
-                    </select>
-                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-                  </div>
+                    </SelectContent>
+                  </Select>
                   <button
                     type="button"
                     onClick={() => removeRow(row.id)}
