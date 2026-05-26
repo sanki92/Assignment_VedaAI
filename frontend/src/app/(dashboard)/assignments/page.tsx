@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Filter, Search, Plus, Loader2 } from "lucide-react";
+import { Filter, Search, Plus } from "lucide-react";
+import { PuffLoader } from "react-spinners";
 import Topbar from "@/components/layout/Topbar";
 import MobileSubHeader from "@/components/layout/MobileSubHeader";
 import AssignmentCard from "@/components/assignments/AssignmentCard";
@@ -36,7 +37,7 @@ export default function AssignmentsPage() {
       <>
         <Topbar />
         <main className="flex min-h-0 flex-1 items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-muted" />
+          <PuffLoader color="#ef6820" size={64} />
         </main>
       </>
     );

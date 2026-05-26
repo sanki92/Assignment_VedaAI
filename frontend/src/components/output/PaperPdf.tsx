@@ -80,7 +80,7 @@ function PaperDocument({ paper }: { paper: QuestionPaper }) {
         </View>
 
         {paper.sections.map((section) => (
-          <View key={section.id} wrap={false}>
+          <View key={section.id}>
             <Text style={styles.sectionTitle}>{section.title}</Text>
             <Text style={styles.heading}>{section.heading}</Text>
             <Text style={styles.instruction}>{section.instruction}</Text>
