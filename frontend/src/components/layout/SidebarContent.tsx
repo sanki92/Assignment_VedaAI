@@ -36,7 +36,7 @@ export default function SidebarContent({
       <Link
         href="/assignments/create"
         onClick={onNavigate}
-        className="btn-create mb-6 flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95"
+        className="btn-create mb-6 flex items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold text-white transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 active:translate-y-px"
       >
         <Sparkles className="h-4 w-4" />
         Create Assignment
@@ -65,7 +65,7 @@ export default function SidebarContent({
               key={item.href}
               href={item.href}
               onClick={onNavigate}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium tracking-[-0.04em] transition ${
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium tracking-[-0.04em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 ${
                 active
                   ? "bg-[#f4f4f4] text-ink"
                   : "text-[#303030] hover:bg-[#f7f7f7]"

@@ -96,7 +96,7 @@ export default function OutputPage() {
               <button
                 onClick={regenerate}
                 disabled={regenerating}
-                className="mt-4 flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-[#f1f1f1] disabled:opacity-60"
+                className="mt-4 flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-[#f1f1f1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 active:translate-y-px disabled:opacity-60"
               >
                 <RefreshCw className={`h-4 w-4 ${regenerating ? "animate-spin" : ""}`} />
                 Regenerate
@@ -112,15 +112,15 @@ export default function OutputPage() {
                   <button
                     onClick={downloadPdf}
                     disabled={downloading}
-                    className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-[#f1f1f1] disabled:opacity-60"
+                    className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-[#f1f1f1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 active:translate-y-px disabled:opacity-60"
                   >
-                    <Download className="h-4 w-4" />
+                    <Download className={`h-4 w-4 ${downloading ? "animate-pulse" : ""}`} />
                     {downloading ? "Preparing..." : "Download as PDF"}
                   </button>
                   <button
                     onClick={regenerate}
                     disabled={regenerating}
-                    className="flex items-center gap-2 rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 disabled:opacity-60"
+                    className="flex items-center gap-2 rounded-full border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 active:translate-y-px disabled:opacity-60"
                   >
                     <RefreshCw className={`h-4 w-4 ${regenerating ? "animate-spin" : ""}`} />
                     Regenerate

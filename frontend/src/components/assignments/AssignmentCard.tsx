@@ -60,14 +60,14 @@ export default function AssignmentCard({
           <div className="absolute right-5 top-12 z-20 w-52 origin-top-right animate-in fade-in zoom-in-95 rounded-2xl bg-surface p-2 shadow-[0_16px_40px_rgba(0,0,0,0.16)] duration-150">
             <Link
               href={`/assignments/${assignment.id}`}
-              className="block rounded-xl px-4 py-2.5 text-[15px] font-medium text-[#303030] transition hover:bg-[#f5f5f5]"
+              className="block rounded-xl px-4 py-2.5 text-[15px] font-medium text-[#303030] transition hover:bg-[#f5f5f5] focus-visible:bg-[#f5f5f5] focus-visible:outline-none"
             >
               View Assignment
             </Link>
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="block w-full rounded-xl px-4 py-2.5 text-left text-[15px] font-medium text-[#e5484d] transition hover:bg-[#f5f5f5] disabled:opacity-60"
+              className="block w-full rounded-xl px-4 py-2.5 text-left text-[15px] font-medium text-[#e5484d] transition hover:bg-[#f5f5f5] focus-visible:bg-[#f5f5f5] focus-visible:outline-none disabled:opacity-60"
             >
               {deleting ? "Deleting..." : "Delete"}
             </button>
