@@ -10,19 +10,24 @@ import MobileSubHeader from "@/components/layout/MobileSubHeader";
 import AssignmentCard from "@/components/assignments/AssignmentCard";
 import EmptyAssignments from "@/components/assignments/EmptyAssignments";
 import { api, type AssignmentSummary } from "@/lib/api";
+import { useAssignmentsCount } from "@/store/countStore";
 
 export default function AssignmentsPage() {
   const [items, setItems] = useState<AssignmentSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const setCount = useAssignmentsCount((s) => s.setCount);
 
   useEffect(() => {
     api
       .listAssignments()
-      .then(setItems)
+      .then((data) => {
+        setItems(data);
+        setCount(data.length);
+      })
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
-  }, []);
+  }, [setCount]);
 
   const filtered = useMemo(
     () =>
@@ -103,7 +108,11 @@ export default function AssignmentsPage() {
                   due: a.dueDate ?? "—",
                 }}
                 onDeleted={(id) =>
-                  setItems((prev) => prev.filter((x) => x.id !== id))
+                  setItems((prev) => {
+                    const next = prev.filter((x) => x.id !== id);
+                    setCount(next.length);
+                    return next;
+                  })
                 }
               />
             ))}

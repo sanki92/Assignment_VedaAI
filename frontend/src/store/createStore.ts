@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { format } from "date-fns";
 import { api } from "@/lib/api";
+import { useAssignmentsCount } from "@/store/countStore";
 
 export type QuestionRow = {
   id: number;
@@ -100,6 +101,7 @@ export const useCreateStore = create<CreateState>((set, get) => ({
           marks: r.marks,
         })),
       });
+      void useAssignmentsCount.getState().refresh();
       return id;
     } finally {
       set({ submitting: false });

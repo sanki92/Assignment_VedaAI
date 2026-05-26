@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sparkles, Settings, GraduationCap } from "lucide-react";
 import { navItems } from "@/lib/nav";
+import { useAssignmentsCount } from "@/store/countStore";
 
 export default function SidebarContent({
   onNavigate,
@@ -11,6 +13,12 @@ export default function SidebarContent({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const count = useAssignmentsCount((s) => s.count);
+  const refresh = useAssignmentsCount((s) => s.refresh);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   return (
     <>
@@ -65,9 +73,9 @@ export default function SidebarContent({
             >
               <Icon className="h-[18px] w-[18px]" />
               <span className="flex-1">{item.label}</span>
-              {item.badge ? (
+              {item.href === "/assignments" && count > 0 ? (
                 <span className="flex h-5 min-w-5 items-center justify-center rounded-full brand-gradient px-1.5 text-xs font-semibold text-white">
-                  {item.badge}
+                  {count}
                 </span>
               ) : null}
             </Link>
