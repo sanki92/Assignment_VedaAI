@@ -12,6 +12,7 @@ export default function OutputPage() {
   const [detail, setDetail] = useState<AssignmentDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -51,6 +52,17 @@ export default function OutputPage() {
     await api.regenerate(id);
   };
 
+  const downloadPdf = async () => {
+    if (!detail?.result) return;
+    setDownloading(true);
+    try {
+      const { downloadPaperPdf } = await import("@/components/output/PaperPdf");
+      await downloadPaperPdf(detail.result);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   const paper = detail?.result;
   const pending =
     !detail || detail.status === "queued" || detail.status === "processing";
@@ -86,11 +98,12 @@ export default function OutputPage() {
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <button
-                  onClick={() => window.print()}
-                  className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-[#f1f1f1]"
+                  onClick={downloadPdf}
+                  disabled={downloading}
+                  className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-[#f1f1f1] disabled:opacity-60"
                 >
                   <Download className="h-4 w-4" />
-                  Download as PDF
+                  {downloading ? "Preparing..." : "Download as PDF"}
                 </button>
                 <button
                   onClick={regenerate}
