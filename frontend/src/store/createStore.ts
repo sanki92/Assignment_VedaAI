@@ -18,6 +18,7 @@ type CreateState = {
   dueDate?: Date;
   instructions: string;
   fileName: string | null;
+  material: string;
   rows: QuestionRow[];
   submitting: boolean;
   errors: Errors;
@@ -25,6 +26,7 @@ type CreateState = {
   setDueDate: (date?: Date) => void;
   setInstructions: (value: string) => void;
   setFileName: (name: string | null) => void;
+  setMaterial: (value: string) => void;
   addRow: () => void;
   removeRow: (id: number) => void;
   updateRow: (id: number, patch: Partial<QuestionRow>) => void;
@@ -44,6 +46,7 @@ export const useCreateStore = create<CreateState>((set, get) => ({
   dueDate: undefined,
   instructions: "",
   fileName: null,
+  material: "",
   rows: initialRows,
   submitting: false,
   errors: {},
@@ -53,6 +56,7 @@ export const useCreateStore = create<CreateState>((set, get) => ({
     set((s) => ({ dueDate: date, errors: { ...s.errors, dueDate: undefined } })),
   setInstructions: (value) => set({ instructions: value }),
   setFileName: (name) => set({ fileName: name }),
+  setMaterial: (value) => set({ material: value }),
 
   addRow: () =>
     set((s) => ({
@@ -85,10 +89,11 @@ export const useCreateStore = create<CreateState>((set, get) => ({
     if (!get().validate()) return null;
     set({ submitting: true });
     try {
-      const { dueDate, instructions, rows } = get();
+      const { dueDate, instructions, material, rows } = get();
       const { id } = await api.createAssignment({
         dueDate: dueDate ? format(dueDate, "dd-MM-yyyy") : undefined,
         instructions: instructions.trim() || undefined,
+        material: material.trim() || undefined,
         questionTypes: rows.map((r) => ({
           type: r.type,
           count: r.count,
@@ -106,6 +111,7 @@ export const useCreateStore = create<CreateState>((set, get) => ({
       dueDate: undefined,
       instructions: "",
       fileName: null,
+      material: "",
       rows: initialRows,
       errors: {},
       nextId: 5,

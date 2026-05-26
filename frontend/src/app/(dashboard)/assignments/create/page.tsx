@@ -16,6 +16,7 @@ import Topbar from "@/components/layout/Topbar";
 import MobileSubHeader from "@/components/layout/MobileSubHeader";
 import Stepper from "@/components/create/Stepper";
 import { useCreateStore } from "@/store/createStore";
+import { extractFileText } from "@/lib/extractText";
 import {
   Select,
   SelectContent,
@@ -54,6 +55,7 @@ export default function CreateAssignmentPage() {
     setDueDate,
     setInstructions,
     setFileName,
+    setMaterial,
     addRow,
     removeRow,
     updateRow,
@@ -105,7 +107,16 @@ export default function CreateAssignmentPage() {
             type="file"
             accept=".pdf,.txt,image/png,image/jpeg"
             className="hidden"
-            onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              setFileName(file.name);
+              try {
+                setMaterial(await extractFileText(file));
+              } catch {
+                setMaterial("");
+              }
+            }}
           />
           <button
             type="button"
@@ -256,7 +267,7 @@ export default function CreateAssignmentPage() {
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               rows={4}
-              placeholder="e.g Generate a question paper for 3 hour exam duration..."
+              placeholder="e.g Generate a question paper for a 3 hour assignment..."
               className="w-full resize-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-11 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none placeholder:text-faint"
             />
             <button className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4]">

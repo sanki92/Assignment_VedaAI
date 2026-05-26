@@ -34,6 +34,7 @@ export type CreateAssignmentPayload = {
   grade?: string;
   dueDate?: string;
   instructions?: string;
+  material?: string;
   questionTypes: QuestionTypeInput[];
 };
 
