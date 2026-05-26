@@ -15,6 +15,7 @@ export type Section = {
 };
 
 export type QuestionPaper = {
+  title: string;
   message: string;
   school: string;
   subject: string;

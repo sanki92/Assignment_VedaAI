@@ -41,11 +41,13 @@ Rules:
 - maxMarks must equal ${totalMarks}.
 - timeAllowed: a sensible duration string based on total marks unless the instructions specify one.
 - generalInstruction: a short line such as "All questions are compulsory unless stated otherwise.".
+- title: a short descriptive paper title (3 to 6 words), e.g. "Class 8 Science - Force and Pressure".
 - message: a one-line friendly intro to the paper.
 - answerKey: concise model answers, one per question, in the same order questions appear across all sections.
 
 Return ONLY a JSON object with this exact shape, no markdown, no commentary:
 {
+  "title": string,
   "message": string,
   "school": string,
   "subject": string,

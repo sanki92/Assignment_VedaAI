@@ -17,6 +17,7 @@ export const sectionSchema = z.object({
 });
 
 export const questionPaperSchema = z.object({
+  title: z.string().min(1),
   message: z.string().min(1),
   school: z.string().min(1),
   subject: z.string().min(1),

@@ -30,7 +30,11 @@ export async function markProcessing(id: string) {
 }
 
 export async function markDone(id: string, result: QuestionPaper) {
-  return Assignment.findByIdAndUpdate(id, { status: "done", result });
+  return Assignment.findByIdAndUpdate(id, {
+    status: "done",
+    result,
+    title: result.title,
+  });
 }
 
 export async function markFailed(id: string, error: string) {
