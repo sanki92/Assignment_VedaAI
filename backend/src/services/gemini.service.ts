@@ -5,7 +5,21 @@ import { buildPrompt } from "./prompt.service";
 import { questionPaperSchema, type QuestionPaper } from "../schemas/paper.schema";
 import type { CreateAssignmentInput } from "../schemas/assignment.dto";
 
-const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+const clients = env.GEMINI_API_KEYS.map(
+  (apiKey) => new GoogleGenAI({ apiKey })
+);
+let cursor = 0;
+
+function isQuotaError(err: unknown): boolean {
+  const message =
+    err instanceof Error ? err.message.toLowerCase() : String(err).toLowerCase();
+  return (
+    message.includes("429") ||
+    message.includes("quota") ||
+    message.includes("rate limit") ||
+    message.includes("resource_exhausted")
+  );
+}
 
 function extractJson(raw: string): string {
   const trimmed = raw.trim();
@@ -27,20 +41,37 @@ function parsePaper(raw: string): QuestionPaper | null {
   }
 }
 
-async function callModel(prompt: string): Promise<string> {
-  const response = await ai.models.generateContent({
-    model: env.GEMINI_MODEL,
-    contents: prompt,
-    config: { responseMimeType: "application/json", temperature: 0.7 },
-  });
-  return response.text ?? "";
+async function callWithRotation(prompt: string): Promise<string> {
+  let lastError: unknown;
+  for (let i = 0; i < clients.length; i++) {
+    const client = clients[cursor % clients.length];
+    cursor = (cursor + 1) % clients.length;
+    try {
+      const response = await client.models.generateContent({
+        model: env.GEMINI_MODEL,
+        contents: prompt,
+        config: { responseMimeType: "application/json", temperature: 0.7 },
+      });
+      return response.text ?? "";
+    } catch (err) {
+      lastError = err;
+      if (isQuotaError(err)) {
+        logger.warn("Gemini key hit quota, rotating to next key");
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("All Gemini keys exhausted");
 }
 
 export async function generateQuestionPaper(
   input: CreateAssignmentInput
 ): Promise<QuestionPaper> {
   for (let attempt = 0; attempt < 2; attempt++) {
-    const raw = await callModel(buildPrompt(input, attempt > 0));
+    const raw = await callWithRotation(buildPrompt(input, attempt > 0));
     const paper = parsePaper(raw);
     if (paper) return paper;
     logger.warn({ attempt }, "Model output failed validation, retrying");
