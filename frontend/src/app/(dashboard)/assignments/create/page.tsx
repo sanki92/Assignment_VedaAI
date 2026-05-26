@@ -13,12 +13,19 @@ import {
   Wand2,
   FileText,
   Check,
+  TriangleAlert,
 } from "lucide-react";
 import { format } from "date-fns";
 import Topbar from "@/components/layout/Topbar";
 import MobileSubHeader from "@/components/layout/MobileSubHeader";
 import Stepper from "@/components/create/Stepper";
-import { useCreateStore } from "@/store/createStore";
+import {
+  useCreateStore,
+  MAX_FILE_BYTES,
+  MAX_COUNT,
+  MAX_MARKS,
+  MAX_QUESTION_TYPES,
+} from "@/store/createStore";
 import { extractFileText } from "@/lib/extractText";
 import {
   Select,
@@ -52,12 +59,15 @@ export default function CreateAssignmentPage() {
     dueDate,
     instructions,
     fileName,
+    fileStatus,
+    fileMessage,
     rows,
     errors,
     submitting,
+    submitError,
     setDueDate,
     setInstructions,
-    setFileName,
+    setFile,
     setMaterial,
     addRow,
     removeRow,
@@ -131,30 +141,68 @@ export default function CreateAssignmentPage() {
             onChange={async (e) => {
               const file = e.target.files?.[0];
               if (!file) return;
-              setFileName(file.name);
-              try {
-                setMaterial(await extractFileText(file));
-              } catch {
+              if (file.size > MAX_FILE_BYTES) {
                 setMaterial("");
+                setFile(
+                  file.name,
+                  "error",
+                  "This file is over 10MB. Please choose a smaller file."
+                );
+                if (fileRef.current) fileRef.current.value = "";
+                return;
+              }
+              setFile(file.name, null);
+              let text = "";
+              try {
+                text = await extractFileText(file);
+              } catch {
+                text = "";
+              }
+              setMaterial(text);
+              if (text) {
+                setFile(file.name, "ready");
+              } else {
+                setFile(
+                  file.name,
+                  "empty",
+                  "Couldn't read text from this file. It will be stored but not used as source material."
+                );
               }
             }}
           />
           {fileName ? (
-            <div className="mt-6 flex items-center gap-3 rounded-2xl border border-brand/30 bg-brand/5 px-4 py-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-brand-dark shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+            <div
+              className={`mt-6 flex items-center gap-3 rounded-2xl border px-4 py-4 ${
+                fileStatus === "ready"
+                  ? "border-brand/30 bg-brand/5"
+                  : "border-[#e9b949]/40 bg-[#fdf6e8]"
+              }`}
+            >
+              <span
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)] ${
+                  fileStatus === "ready" ? "text-brand-dark" : "text-[#a8650e]"
+                }`}
+              >
                 <FileText className="h-5 w-5" />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold">{fileName}</p>
-                <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-brand-dark">
-                  <Check className="h-3.5 w-3.5" />
-                  Ready as source material
-                </p>
+                {fileStatus === "ready" ? (
+                  <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-brand-dark">
+                    <Check className="h-3.5 w-3.5" />
+                    Ready as source material
+                  </p>
+                ) : (
+                  <p className="mt-0.5 flex items-start gap-1 text-xs font-medium text-[#a8650e]">
+                    <TriangleAlert className="mt-px h-3.5 w-3.5 shrink-0" />
+                    {fileMessage}
+                  </p>
+                )}
               </div>
               <button
                 type="button"
                 onClick={() => {
-                  setFileName(null);
+                  setFile(null, null);
                   setMaterial("");
                   if (fileRef.current) fileRef.current.value = "";
                 }}
@@ -268,6 +316,7 @@ export default function CreateAssignmentPage() {
                     <Stepper
                       value={row.count}
                       min={1}
+                      max={MAX_COUNT}
                       onChange={(v) => updateRow(row.id, { count: v })}
                     />
                   </div>
@@ -278,6 +327,7 @@ export default function CreateAssignmentPage() {
                     <Stepper
                       value={row.marks}
                       min={1}
+                      max={MAX_MARKS}
                       onChange={(v) => updateRow(row.id, { marks: v })}
                     />
                   </div>
@@ -295,7 +345,8 @@ export default function CreateAssignmentPage() {
           <button
             type="button"
             onClick={addRow}
-            className="group mt-4 flex items-center gap-2 rounded-full py-1 pr-2 text-sm font-semibold transition hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+            disabled={rows.length >= MAX_QUESTION_TYPES}
+            className="group mt-4 flex items-center gap-2 rounded-full py-1 pr-2 text-sm font-semibold transition hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:text-ink"
           >
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#101010] text-white transition group-hover:bg-black group-active:scale-95">
               <Plus className="h-4 w-4" />
@@ -332,6 +383,12 @@ export default function CreateAssignmentPage() {
             </button>
           </div>
         </div>
+
+        {submitError && (
+          <p className="mx-auto mt-4 w-full max-w-4xl text-right text-sm font-medium text-[#e5484d]">
+            {submitError}
+          </p>
+        )}
 
         <div className="mx-auto mt-6 flex w-full max-w-4xl items-center justify-between">
           <button

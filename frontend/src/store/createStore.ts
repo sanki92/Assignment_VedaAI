@@ -15,18 +15,23 @@ type Errors = {
   questionTypes?: string;
 };
 
+export type FileStatus = "ready" | "empty" | "error";
+
 type CreateState = {
   dueDate?: Date;
   instructions: string;
   fileName: string | null;
+  fileStatus: FileStatus | null;
+  fileMessage: string;
   material: string;
   rows: QuestionRow[];
   submitting: boolean;
   errors: Errors;
+  submitError: string;
   nextId: number;
   setDueDate: (date?: Date) => void;
   setInstructions: (value: string) => void;
-  setFileName: (name: string | null) => void;
+  setFile: (name: string | null, status: FileStatus | null, message?: string) => void;
   setMaterial: (value: string) => void;
   addRow: () => void;
   removeRow: (id: number) => void;
@@ -36,6 +41,11 @@ type CreateState = {
   submit: () => Promise<string | null>;
   reset: () => void;
 };
+
+export const MAX_FILE_BYTES = 10 * 1024 * 1024;
+export const MAX_COUNT = 50;
+export const MAX_MARKS = 100;
+export const MAX_QUESTION_TYPES = 15;
 
 const initialRows: QuestionRow[] = [
   { id: 1, type: "Multiple Choice Questions", count: 4, marks: 1 },
@@ -70,16 +80,20 @@ export const useCreateStore = create<CreateState>((set, get) => ({
   dueDate: undefined,
   instructions: "",
   fileName: null,
+  fileStatus: null,
+  fileMessage: "",
   material: "",
   rows: initialRows,
   submitting: false,
   errors: {},
+  submitError: "",
   nextId: 5,
 
   setDueDate: (date) =>
     set((s) => ({ dueDate: date, errors: { ...s.errors, dueDate: undefined } })),
   setInstructions: (value) => set({ instructions: value }),
-  setFileName: (name) => set({ fileName: name }),
+  setFile: (name, status, message = "") =>
+    set({ fileName: name, fileStatus: status, fileMessage: message }),
   setMaterial: (value) => set({ material: value }),
 
   addRow: () =>
@@ -97,9 +111,12 @@ export const useCreateStore = create<CreateState>((set, get) => ({
     set({
       instructions: exampleInstructions,
       fileName: "life-processes-class10.txt",
+      fileStatus: "ready",
+      fileMessage: "",
       material: exampleMaterial,
       rows: exampleRows.map((r) => ({ ...r })),
       errors: {},
+      submitError: "",
       nextId: exampleRows.length + 1,
     }),
 
@@ -113,15 +130,21 @@ export const useCreateStore = create<CreateState>((set, get) => ({
     const errors: Errors = {};
     if (!dueDate) errors.dueDate = "Please select a due date";
     if (rows.length === 0) errors.questionTypes = "Add at least one question type";
-    if (rows.some((r) => r.count < 1 || r.marks < 1))
+    else if (rows.length > MAX_QUESTION_TYPES)
+      errors.questionTypes = `Add at most ${MAX_QUESTION_TYPES} question types`;
+    else if (rows.some((r) => r.count < 1 || r.marks < 1))
       errors.questionTypes = "Questions and marks must be at least 1";
+    else if (rows.some((r) => r.count > MAX_COUNT))
+      errors.questionTypes = `Questions per type must be at most ${MAX_COUNT}`;
+    else if (rows.some((r) => r.marks > MAX_MARKS))
+      errors.questionTypes = `Marks per question must be at most ${MAX_MARKS}`;
     set({ errors });
     return Object.keys(errors).length === 0;
   },
 
   submit: async () => {
     if (!get().validate()) return null;
-    set({ submitting: true });
+    set({ submitting: true, submitError: "" });
     try {
       const { dueDate, instructions, material, rows } = get();
       const { id } = await api.createAssignment({
@@ -136,6 +159,12 @@ export const useCreateStore = create<CreateState>((set, get) => ({
       });
       void useAssignmentsCount.getState().refresh();
       return id;
+    } catch {
+      set({
+        submitError:
+          "Something went wrong creating the assignment. Please try again.",
+      });
+      return null;
     } finally {
       set({ submitting: false });
     }
@@ -146,9 +175,12 @@ export const useCreateStore = create<CreateState>((set, get) => ({
       dueDate: undefined,
       instructions: "",
       fileName: null,
+      fileStatus: null,
+      fileMessage: "",
       material: "",
       rows: initialRows,
       errors: {},
+      submitError: "",
       nextId: 5,
     }),
 }));
