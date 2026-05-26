@@ -11,6 +11,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Wand2,
+  FileText,
+  Check,
 } from "lucide-react";
 import { format } from "date-fns";
 import Topbar from "@/components/layout/Topbar";
@@ -137,30 +139,61 @@ export default function CreateAssignmentPage() {
               }
             }}
           />
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            className="mt-6 flex w-full flex-col items-center rounded-2xl border-2 border-dashed border-[#d8d8d8] px-6 py-14 text-center transition hover:border-brand/60"
-          >
-            <span className="flex h-11 w-11 items-center justify-center rounded-full text-ink">
-              <UploadCloud className="h-7 w-7" />
-            </span>
-            <span className="mt-3 text-base font-bold">
-              {fileName ?? "Choose a file or drag & drop it here"}
-            </span>
-            <span className="mt-1 text-xs text-faint">JPEG, PNG, upto 10MB</span>
-            <span className="mt-5 rounded-full border border-line bg-white px-5 py-2.5 text-xs font-semibold shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
-              Browse Files
-            </span>
-          </button>
-          <p className="mt-4 text-center text-sm text-muted">
-            Upload images of your preferred document/image
-          </p>
+          {fileName ? (
+            <div className="mt-6 flex items-center gap-3 rounded-2xl border border-brand/30 bg-brand/5 px-4 py-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-brand-dark shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
+                <FileText className="h-5 w-5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold">{fileName}</p>
+                <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-brand-dark">
+                  <Check className="h-3.5 w-3.5" />
+                  Ready as source material
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setFileName(null);
+                  setMaterial("");
+                  if (fileRef.current) fileRef.current.value = "";
+                }}
+                aria-label="Remove file"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="group mt-6 flex w-full flex-col items-center rounded-2xl border-2 border-dashed border-[#d8d8d8] px-6 py-14 text-center transition hover:border-brand/60 focus-visible:border-brand/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
+              >
+                <span className="flex h-11 w-11 items-center justify-center rounded-full text-ink">
+                  <UploadCloud className="h-7 w-7" />
+                </span>
+                <span className="mt-3 text-base font-bold">
+                  Choose a file or drag &amp; drop it here
+                </span>
+                <span className="mt-1 text-xs text-faint">
+                  JPEG, PNG, upto 10MB
+                </span>
+                <span className="mt-5 rounded-full border border-line bg-white px-5 py-2.5 text-xs font-semibold shadow-[0_1px_4px_rgba(0,0,0,0.06)] transition group-hover:border-brand/40">
+                  Browse Files
+                </span>
+              </button>
+              <p className="mt-4 text-center text-sm text-muted">
+                Upload images of your preferred document/image
+              </p>
+            </>
+          )}
 
           <label className="mt-8 block text-base font-bold">Due Date</label>
           <Popover>
             <PopoverTrigger
-              className={`mt-2 flex w-full items-center justify-between rounded-xl border bg-white px-4 py-3.5 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none ${
+              className={`mt-2 flex w-full items-center justify-between rounded-xl border bg-white px-4 py-3.5 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none transition focus-visible:ring-2 focus-visible:ring-brand/40 aria-expanded:border-brand/50 ${
                 errors.dueDate ? "border-[#e5484d]" : "border-[#efefef]"
               }`}
             >
@@ -220,7 +253,8 @@ export default function CreateAssignmentPage() {
                   <button
                     type="button"
                     onClick={() => removeRow(row.id)}
-                    className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4]"
+                    aria-label="Remove question type"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4] hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -261,9 +295,9 @@ export default function CreateAssignmentPage() {
           <button
             type="button"
             onClick={addRow}
-            className="mt-4 flex items-center gap-2 text-sm font-semibold"
+            className="group mt-4 flex items-center gap-2 rounded-full py-1 pr-2 text-sm font-semibold transition hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
           >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#101010] text-white">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#101010] text-white transition group-hover:bg-black group-active:scale-95">
               <Plus className="h-4 w-4" />
             </span>
             Add Question Type
@@ -287,9 +321,13 @@ export default function CreateAssignmentPage() {
               onChange={(e) => setInstructions(e.target.value)}
               rows={4}
               placeholder="e.g Create an assignment for a 3 hour duration..."
-              className="w-full resize-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-11 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none placeholder:text-faint"
+              className="w-full resize-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-11 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none transition placeholder:text-faint focus:border-brand/40 focus:ring-2 focus:ring-brand/15"
             />
-            <button className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4]">
+            <button
+              type="button"
+              aria-label="Voice input"
+              className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+            >
               <Mic className="h-4 w-4" />
             </button>
           </div>
@@ -298,7 +336,7 @@ export default function CreateAssignmentPage() {
         <div className="mx-auto mt-6 flex w-full max-w-4xl items-center justify-between">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-3 text-sm font-semibold transition hover:bg-[#f7f7f7]"
+            className="flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-3 text-sm font-semibold transition hover:bg-[#f7f7f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 active:translate-y-px"
           >
             <ArrowLeft className="h-4 w-4" />
             Previous
@@ -306,10 +344,14 @@ export default function CreateAssignmentPage() {
           <button
             onClick={onNext}
             disabled={submitting}
-            className="flex items-center gap-2 rounded-full bg-[#101010] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black disabled:opacity-60"
+            className="group flex items-center gap-2 rounded-full bg-[#101010] px-6 py-3 text-sm font-semibold text-white transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 active:translate-y-px disabled:opacity-60"
           >
             {submitting ? "Generating..." : "Next"}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight
+              className={`h-4 w-4 transition-transform ${
+                submitting ? "animate-pulse" : "group-hover:translate-x-0.5"
+              }`}
+            />
           </button>
         </div>
       </main>
