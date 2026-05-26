@@ -1,19 +1,36 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
+import http from "http";
+import { env } from "./config/env";
+import { logger } from "./config/logger";
+import { connectDb, disconnectDb } from "./config/db";
+import { createApp } from "./app";
+import { initSocket } from "./ws/socket";
+import { startGenerationWorker } from "./workers/generation.worker";
 
-dotenv.config();
+async function main() {
+  await connectDb();
 
-const app = express();
-const port = process.env.PORT || 4000;
+  const app = createApp();
+  const server = http.createServer(app);
+  initSocket(server);
+  const worker = startGenerationWorker();
 
-app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
-app.use(express.json());
+  server.listen(env.PORT, () => {
+    logger.info(`Server listening on port ${env.PORT}`);
+  });
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
+  const shutdown = async () => {
+    logger.info("Shutting down");
+    await worker.close();
+    server.close();
+    await disconnectDb();
+    process.exit(0);
+  };
 
-app.listen(port, () => {
-  console.log(`server listening on port ${port}`);
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
+}
+
+main().catch((err) => {
+  logger.error({ err }, "Fatal startup error");
+  process.exit(1);
 });
