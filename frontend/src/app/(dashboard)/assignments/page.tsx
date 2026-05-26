@@ -34,7 +34,7 @@ export default function AssignmentsPage() {
               </p>
             </div>
 
-            <div className="mt-5 flex items-center justify-between rounded-2xl bg-surface px-5 py-3">
+            <div className="mt-5 flex items-center justify-between rounded-2xl bg-surface px-5 py-3 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
               <button className="flex items-center gap-2 text-sm font-medium text-muted">
                 <Filter className="h-4 w-4" />
                 Filter By

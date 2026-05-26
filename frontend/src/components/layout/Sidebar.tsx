@@ -2,37 +2,35 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Sparkles,
-  LayoutGrid,
-  Images,
-  ClipboardList,
-  BookOpen,
-  Clock3,
-  Settings,
-} from "lucide-react";
+import type { IconType } from "react-icons";
+import { PiSquaresFourBold } from "react-icons/pi";
+import { MdCoPresent } from "react-icons/md";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { RiBookLine } from "react-icons/ri";
+import { LuChartPie } from "react-icons/lu";
+import { Sparkles, Settings } from "lucide-react";
 
 type NavItem = {
   label: string;
   href: string;
-  icon: typeof LayoutGrid;
+  icon: IconType;
   badge?: number;
   disabled?: boolean;
 };
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/home", icon: LayoutGrid, disabled: true },
-  { label: "My Groups", href: "/groups", icon: Images, disabled: true },
-  { label: "Assignments", href: "/assignments", icon: ClipboardList, badge: 10 },
-  { label: "AI Teacher's Toolkit", href: "/toolkit", icon: BookOpen, disabled: true },
-  { label: "My Library", href: "/library", icon: Clock3, disabled: true },
+  { label: "Home", href: "/home", icon: PiSquaresFourBold, disabled: true },
+  { label: "My Groups", href: "/groups", icon: MdCoPresent, disabled: true },
+  { label: "Assignments", href: "/assignments", icon: IoDocumentTextOutline, badge: 10 },
+  { label: "AI Teacher's Toolkit", href: "/toolkit", icon: RiBookLine, disabled: true },
+  { label: "My Library", href: "/library", icon: LuChartPie, disabled: true },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-[264px] shrink-0 flex-col rounded-2xl bg-surface p-4 lg:flex">
+    <aside className="hidden w-[264px] shrink-0 flex-col rounded-2xl bg-surface p-4 shadow-[0_8px_30px_rgba(0,0,0,0.06)] lg:flex">
       <div className="flex items-center gap-2 px-2 pb-5 pt-1">
         <span className="flex h-8 w-8 items-center justify-center rounded-lg brand-gradient text-sm font-extrabold text-white">
           V

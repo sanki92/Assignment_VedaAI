@@ -19,7 +19,7 @@ export default function AssignmentCard({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="relative rounded-2xl border border-line bg-surface px-6 py-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+    <div className="relative rounded-2xl bg-surface px-6 py-6 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
       <div className="flex items-start justify-between">
         <h3 className="text-2xl font-extrabold leading-[1.2] tracking-[-0.04em] text-[#303030] underline decoration-1 underline-offset-[3px]">
           {assignment.title}
@@ -38,14 +38,14 @@ export default function AssignmentCard({
             className="fixed inset-0 z-10 cursor-default"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-5 top-12 z-20 w-44 overflow-hidden rounded-xl border border-line bg-surface py-1 shadow-[0_12px_30px_rgba(0,0,0,0.12)]">
+          <div className="absolute right-5 top-12 z-20 w-52 rounded-2xl bg-surface p-2 shadow-[0_16px_40px_rgba(0,0,0,0.16)]">
             <Link
               href={`/assignments/${assignment.id}`}
-              className="block px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-[#f7f7f7]"
+              className="block rounded-xl px-4 py-2.5 text-[15px] font-medium text-[#303030] transition hover:bg-[#f5f5f5]"
             >
               View Assignment
             </Link>
-            <button className="block w-full px-4 py-2.5 text-left text-sm font-medium text-[#e5484d] transition hover:bg-[#fdf2f2]">
+            <button className="block w-full rounded-xl px-4 py-2.5 text-left text-[15px] font-medium text-[#e5484d] transition hover:bg-[#f5f5f5]">
               Delete
             </button>
           </div>
