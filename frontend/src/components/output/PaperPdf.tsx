@@ -8,7 +8,13 @@ import {
   StyleSheet,
   pdf,
 } from "@react-pdf/renderer";
-import type { QuestionPaper } from "@/lib/paper";
+import type { Difficulty, QuestionPaper } from "@/lib/paper";
+
+const chipColors: Record<Difficulty, { bg: string; color: string }> = {
+  Easy: { bg: "#e7f6ec", color: "#1f7a44" },
+  Moderate: { bg: "#fdf2e0", color: "#a8650e" },
+  Challenging: { bg: "#fcebe9", color: "#b4332c" },
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -50,6 +56,13 @@ const styles = StyleSheet.create({
   qRow: { flexDirection: "row", marginTop: 9 },
   qNum: { width: 20 },
   qText: { flex: 1 },
+  chip: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 9,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 3,
+  },
   end: { fontFamily: "Helvetica-Bold", marginTop: 18 },
   ansTitle: { fontFamily: "Helvetica-Bold", marginTop: 24 },
 });
@@ -88,7 +101,17 @@ function PaperDocument({ paper }: { paper: QuestionPaper }) {
               <View key={i} style={styles.qRow}>
                 <Text style={styles.qNum}>{i + 1}.</Text>
                 <Text style={styles.qText}>
-                  [{q.difficulty}] {q.text} [{q.marks} Marks]
+                  <Text
+                    style={{
+                      ...styles.chip,
+                      backgroundColor: chipColors[q.difficulty].bg,
+                      color: chipColors[q.difficulty].color,
+                    }}
+                  >
+                    {q.difficulty}
+                  </Text>
+                  {"  "}
+                  {q.text} <Text style={styles.bold}>[{q.marks} Marks]</Text>
                 </Text>
               </View>
             ))}
