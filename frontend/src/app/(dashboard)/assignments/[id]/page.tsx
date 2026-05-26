@@ -9,16 +9,16 @@ export default function OutputPage() {
     <>
       <Topbar title="Create New" />
       <main className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-8 scrollbar-thin">
-        <div className="rounded-[28px] bg-[#2c2c2c] p-3">
+        <div className="rounded-[28px] bg-[#5e5e5e] p-3">
           <OutputHeader message={paper.message} />
 
-          <article className="mt-3 rounded-2xl bg-white px-12 py-10 text-ink">
+          <article className="mt-3 rounded-2xl bg-white px-12 py-10 font-paper text-ink">
             <header className="text-center">
-              <h1 className="text-[28px] font-extrabold leading-tight tracking-[-0.02em]">
+              <h1 className="text-[32px] font-bold leading-tight tracking-[-0.04em]">
                 {paper.school}
               </h1>
-              <p className="mt-2 text-lg font-bold">Subject: {paper.subject}</p>
-              <p className="text-lg font-bold">Class: {paper.grade}</p>
+              <p className="mt-2 text-lg font-semibold">Subject: {paper.subject}</p>
+              <p className="text-lg font-semibold">Class: {paper.grade}</p>
             </header>
 
             <div className="mt-8 flex items-center justify-between text-base font-bold">
