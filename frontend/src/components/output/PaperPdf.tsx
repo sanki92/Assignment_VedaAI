@@ -58,7 +58,7 @@ function PaperDocument({ paper }: { paper: QuestionPaper }) {
   let answerNumber = 0;
 
   return (
-    <Document title={`${paper.subject} Question Paper`}>
+    <Document title={`${paper.subject} Assignment`}>
       <Page size="A4" style={styles.page}>
         <Text style={styles.school}>{paper.school}</Text>
         <Text style={styles.center}>Subject: {paper.subject}</Text>
@@ -95,7 +95,7 @@ function PaperDocument({ paper }: { paper: QuestionPaper }) {
           </View>
         ))}
 
-        <Text style={styles.end}>End of Question Paper</Text>
+        <Text style={styles.end}>End of Assignment</Text>
 
         <Text style={styles.ansTitle}>Answer Key:</Text>
         {paper.sections.flatMap((section) =>
@@ -125,7 +125,7 @@ export async function downloadPaperPdf(paper: QuestionPaper): Promise<void> {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `${paper.subject || "question"}-question-paper.pdf`
+  link.download = `${paper.subject || "assignment"}-assignment.pdf`
     .replace(/\s+/g, "-")
     .toLowerCase();
   document.body.appendChild(link);

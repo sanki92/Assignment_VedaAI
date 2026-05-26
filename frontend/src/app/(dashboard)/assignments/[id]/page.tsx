@@ -75,7 +75,7 @@ export default function OutputPage() {
         <main className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6">
           <PuffLoader color="#ef6820" size={72} />
           <p className="text-sm font-semibold text-muted lg:text-base">
-            {loading ? "Loading assignment..." : "Generating your question paper..."}
+            {loading ? "Loading assignment..." : "Generating your assignment..."}
           </p>
         </main>
       </>
@@ -176,7 +176,7 @@ export default function OutputPage() {
                 ))}
 
                 <p className="mt-8 text-sm font-bold lg:text-base">
-                  End of Question Paper
+                  End of Assignment
                 </p>
 
                 <section className="mt-10">

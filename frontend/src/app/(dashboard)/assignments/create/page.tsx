@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   UploadCloud,
@@ -60,7 +60,12 @@ export default function CreateAssignmentPage() {
     removeRow,
     updateRow,
     submit,
+    reset,
   } = useCreateStore();
+
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
   const totalQuestions = useMemo(
     () => rows.reduce((sum, r) => sum + r.count, 0),
@@ -267,7 +272,7 @@ export default function CreateAssignmentPage() {
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
               rows={4}
-              placeholder="e.g Generate a question paper for a 3 hour assignment..."
+              placeholder="e.g Create an assignment for a 3 hour duration..."
               className="w-full resize-none rounded-xl border border-[#efefef] bg-white px-4 py-3.5 pr-11 text-sm shadow-[0_1px_4px_rgba(0,0,0,0.05)] outline-none placeholder:text-faint"
             />
             <button className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4]">
