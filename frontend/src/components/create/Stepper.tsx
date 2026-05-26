@@ -6,12 +6,15 @@ export default function Stepper({
   value,
   onChange,
   min = 0,
+  max = Infinity,
 }: {
   value: number;
   onChange: (next: number) => void;
   min?: number;
+  max?: number;
 }) {
   const atMin = value <= min;
+  const atMax = value >= max;
 
   return (
     <div className="flex items-center justify-between gap-3 rounded-full border border-[#efefef] bg-white px-2 py-2 shadow-[0_1px_4px_rgba(0,0,0,0.05)] transition focus-within:border-brand/40">
@@ -29,9 +32,10 @@ export default function Stepper({
       </span>
       <button
         type="button"
-        onClick={() => onChange(value + 1)}
+        onClick={() => onChange(Math.min(max, value + 1))}
+        disabled={atMax}
         aria-label="Increase"
-        className="flex h-6 w-6 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 active:scale-95"
+        className="flex h-6 w-6 items-center justify-center rounded-full text-muted transition hover:bg-[#f4f4f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 active:scale-95 disabled:opacity-40 disabled:hover:bg-transparent"
       >
         <Plus className="h-3.5 w-3.5" />
       </button>
